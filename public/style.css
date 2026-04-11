@@ -307,7 +307,6 @@ body {
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-  min-height: calc(100vh - 62px);
 }
 
 /* ─── PANEL ──────────────────────────────────────────── */
@@ -316,8 +315,6 @@ body {
   border-radius: var(--radius);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
   animation: fadeIn .35s ease;
 }
@@ -347,25 +344,17 @@ body {
 }
 
 /* ─── TABLE ──────────────────────────────────────────── */
-.table-wrap { overflow-x: auto; flex: 1; }
+.table-wrap { overflow-x: auto; }
 
 .crm-table {
   width: 100%;
   border-collapse: collapse;
   font-size: .82rem;
-  table-layout: fixed;
+  /* Use auto layout so columns size naturally */
+  table-layout: auto;
 }
 
-/* Column widths: Client, Contact, Phone, Email, Route, Eq, Status, Actions */
-.crm-table colgroup col:nth-child(1) { width: 17%; }
-.crm-table colgroup col:nth-child(2) { width: 14%; }
-.crm-table colgroup col:nth-child(3) { width: 13%; }
-.crm-table colgroup col:nth-child(4) { width: 17%; }
-.crm-table colgroup col:nth-child(5) { width: 14%; }
-.crm-table colgroup col:nth-child(6) { width: 12%; }
-.crm-table colgroup col:nth-child(7) { width: 10%; }
-.crm-table colgroup col:nth-child(8) { width: 3%;  }
-
+/* ── Header ── */
 .crm-table thead th {
   background: var(--bg3);
   color: var(--text-muted);
@@ -373,19 +362,21 @@ body {
   font-size: .68rem;
   text-transform: uppercase;
   letter-spacing: .08em;
+  /* Consistent padding matching cell inputs */
   padding: 10px 12px;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
-  position: sticky;
-  top: 0;
   cursor: pointer;
   user-select: none;
   transition: background .15s;
+  /* Left-align all headers */
+  text-align: left;
 }
 .crm-table thead th:hover { background: var(--border); }
 .crm-table thead th.sorted { color: var(--blue-light); }
 .sort-icon { opacity: .35; font-size: .65rem; margin-left: 3px; }
 
+/* ── Rows ── */
 .crm-table tbody tr {
   border-bottom: 1px solid var(--border);
   transition: background .12s;
@@ -394,12 +385,18 @@ body {
 .crm-table tbody tr:hover { background: rgba(59,130,246,.06); }
 .crm-table tbody tr.filtered-out { display: none; }
 
-.crm-table td { padding: 0; vertical-align: middle; }
+.crm-table td {
+  padding: 0;
+  vertical-align: middle;
+  /* Match header text-align */
+  text-align: left;
+}
 
-/* Text cells */
+/* ── Text inputs — padding MUST match th padding exactly ── */
 .cell-input {
   display: block;
   width: 100%;
+  /* Same horizontal padding as th: 12px */
   padding: 9px 12px;
   border: none;
   background: transparent;
@@ -409,41 +406,22 @@ body {
   color: var(--text);
   outline: none;
   transition: background .15s;
+  /* Prevent inputs from collapsing */
+  min-width: 80px;
 }
-.cell-input:focus { background: rgba(59,130,246,.08); box-shadow: inset 0 0 0 1.5px var(--blue); }
+.cell-input:focus {
+  background: rgba(59,130,246,.08);
+  box-shadow: inset 0 0 0 1.5px var(--blue);
+}
 .cell-input::placeholder { color: var(--text-dim); }
-td:first-child .cell-input { font-weight: 700; }
+/* Client name bold */
+.crm-table td:nth-child(1) .cell-input { font-weight: 700; }
 
-/* Status select */
-.cell-status {
-  display: block;
-  width: 100%;
-  padding: 8px 10px;
-  border: none;
-  background: transparent;
-  font-family: 'Montserrat', sans-serif;
-  font-size: .78rem;
-  font-weight: 700;
-  cursor: pointer;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  transition: background .15s;
-}
-.cell-status:focus { background: rgba(59,130,246,.08); }
-.cell-status option { background: var(--bg2); color: var(--text); }
-
-td.status-Prospect    .cell-status { color: var(--status-prospect); }
-td.status-Active      .cell-status { color: var(--status-active); }
-td.status-Negotiation .cell-status { color: var(--status-negotiation); }
-td.status-Closed      .cell-status { color: var(--status-closed); }
-td.status-Lost        .cell-status { color: var(--status-lost); }
-
-/* Equipment select */
+/* ── Equipment select ── */
 .cell-equipment {
   display: block;
   width: 100%;
-  padding: 8px 10px;
+  padding: 9px 12px;
   border: none;
   background: transparent;
   font-family: 'Montserrat', sans-serif;
@@ -455,35 +433,51 @@ td.status-Lost        .cell-status { color: var(--status-lost); }
   appearance: none;
   -webkit-appearance: none;
   transition: background .15s;
+  min-width: 110px;
 }
 .cell-equipment:focus { background: rgba(59,130,246,.08); }
 .cell-equipment option { background: var(--bg2); color: var(--text); }
 .cell-equipment.has-value { color: var(--cyan); }
 
-/* Delete button */
-.col-actions { width: 36px; }
-.btn-delete-row {
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  cursor: pointer;
-  padding: 6px 8px;
-  font-size: .9rem;
-  transition: color .15s;
-  display: block;
-  width: 100%;
+/* ── Status cell — wrap dot inside same td, use flex ── */
+.status-cell-wrap {
+  display: flex;
+  align-items: center;
+  padding: 0;
 }
-.btn-delete-row:hover { color: var(--status-lost); }
 
-/* Saving dot */
+.cell-status {
+  flex: 1;
+  padding: 9px 12px;
+  border: none;
+  background: transparent;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .78rem;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background .15s;
+  min-width: 100px;
+}
+.cell-status:focus { background: rgba(59,130,246,.08); }
+.cell-status option { background: var(--bg2); color: var(--text); }
+
+td.status-Prospect    .cell-status { color: var(--status-prospect); }
+td.status-Active      .cell-status { color: var(--status-active); }
+td.status-Negotiation .cell-status { color: var(--status-negotiation); }
+td.status-Closed      .cell-status { color: var(--status-closed); }
+td.status-Lost        .cell-status { color: var(--status-lost); }
+
+/* Saving dot — inside flex wrap, takes no table space */
 .saving-dot {
-  display: inline-block;
-  width: 5px; height: 5px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   background: var(--blue-light);
-  margin-left: 5px;
+  flex-shrink: 0;
+  margin-right: 6px;
   animation: pulse .8s infinite;
-  vertical-align: middle;
   opacity: 0;
   transition: opacity .2s;
 }
@@ -492,6 +486,22 @@ td.status-Lost        .cell-status { color: var(--status-lost); }
   0%,100% { transform:scale(1); opacity:1; }
   50%      { transform:scale(1.5); opacity:.4; }
 }
+
+/* ── Delete button ── */
+.col-actions { width: 36px; }
+.btn-delete-row {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 9px 8px;
+  font-size: .85rem;
+  transition: color .15s;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.btn-delete-row:hover { color: var(--status-lost); }
 
 /* Empty state */
 .empty-row td {
@@ -529,10 +539,7 @@ td.status-Lost        .cell-status { color: var(--status-lost); }
   background: rgba(0,0,0,.65);
   display: flex; align-items: center; justify-content: center;
   z-index: 200;
-  animation: fadeOverlay .2s ease;
 }
-@keyframes fadeOverlay { from{opacity:0;} to{opacity:1;} }
-
 .modal-card {
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -543,7 +550,6 @@ td.status-Lost        .cell-status { color: var(--status-lost); }
   animation: slideUp .25s ease;
 }
 .modal-card.modal-sm { width: 340px; }
-
 .modal-header {
   padding: 18px 22px 14px;
   border-bottom: 1px solid var(--border);
@@ -557,7 +563,6 @@ td.status-Lost        .cell-status { color: var(--status-lost); }
   border-radius: 4px; transition: background .15s;
 }
 .modal-close:hover { background: var(--bg3); }
-
 .modal-body { padding: 22px; }
 .modal-body h4 { font-weight: 700; font-size: .88rem; color: var(--text); margin-bottom: 16px; }
 .modal-body p { font-size: .88rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
@@ -567,8 +572,7 @@ td.status-Lost        .cell-status { color: var(--status-lost); }
 @media (max-width: 700px) {
   .topbar { padding: 10px 14px; flex-wrap: wrap; height: auto; gap: 8px; }
   .topbar-right { width: 100%; flex-wrap: wrap; }
-  .search-wrap input { width: 100%; }
-  .search-wrap input:focus { width: 100%; }
+  .search-wrap input, .search-wrap input:focus { width: 100%; }
   .dashboard-grid { padding: 12px; gap: 12px; }
   .login-card { width: 94vw; padding: 32px 22px; }
 }
