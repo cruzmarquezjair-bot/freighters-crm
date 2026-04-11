@@ -73,11 +73,9 @@ body {
   margin-bottom: 28px;
 }
 .login-logo img {
-  height: 80px;
+  height: 110px;
   object-fit: contain;
-  background: #fff;
-  border-radius: 10px;
-  padding: 8px 16px;
+  /* transparent PNG — logo is white on black bg, looks great */
 }
 .login-title {
   font-size: 1.5rem;
@@ -250,11 +248,9 @@ body {
 }
 .topbar-left { display: flex; align-items: center; gap: 14px; }
 .topbar-logo {
-  height: 42px;
+  height: 38px;
   object-fit: contain;
-  background: #fff;
-  border-radius: 6px;
-  padding: 4px 8px;
+  /* transparent PNG works great on dark topbar */
 }
 .topbar-title {
   display: flex;
