@@ -135,10 +135,12 @@ function createRow(line, client) {
       </select>
     </td>
     <td class="status-${esc(client.status)}">
-      <select class="cell-status" data-field="status">
-        ${STATUSES.map(s => `<option value="${s}"${s === client.status ? ' selected' : ''}>${s}</option>`).join('')}
-      </select>
-      <span class="saving-dot" id="${savingId}"></span>
+      <div class="status-cell-wrap">
+        <select class="cell-status" data-field="status">
+          ${STATUSES.map(s => `<option value="${s}"${s === client.status ? ' selected' : ''}>${s}</option>`).join('')}
+        </select>
+        <span class="saving-dot" id="${savingId}"></span>
+      </div>
     </td>
     <td class="col-actions">
       <button class="btn-delete-row" title="Eliminar">✕</button>
